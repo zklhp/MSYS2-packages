@@ -7,7 +7,7 @@
 # Configure
 cd "$(dirname "$0")"
 source 'ci-library.sh'
-deploy_enabled && mkdir artifacts
+mkdir artifacts
 git_config user.email 'ci@msys2.org'
 git_config user.name  'MSYS2 Continuous Integration'
 git remote add upstream 'https://github.com/Alexpux/MSYS2-packages'
@@ -27,9 +27,9 @@ execute 'Approving recipe quality' check_recipe_quality
 for package in "${packages[@]}"; do
     execute 'Building binary' makepkg --noconfirm --noprogressbar --skippgpcheck --nocheck --syncdeps --rmdeps --cleanbuild
     execute 'Building source' makepkg --noconfirm --noprogressbar --skippgpcheck --allsource
-    execute 'Installing' yes:pacman --noprogressbar --upgrade *.pkg.tar.xz
-    deploy_enabled && mv "${package}"/*.pkg.tar.xz artifacts
-    deploy_enabled && mv "${package}"/*.src.tar.gz artifacts
+    # execute 'Installing' yes:pacman --noprogressbar --upgrade *.pkg.tar.xz
+    mv "${package}"/*.pkg.tar.xz artifacts
+    mv "${package}"/*.src.tar.gz artifacts
     unset package
 done
 
