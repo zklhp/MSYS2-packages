@@ -1,7 +1,7 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 
 pkgname=perl-libwww
-pkgver=6.15
+pkgver=6.38
 pkgrel=1
 pkgdesc="The World-Wide Web library for Perl"
 arch=('any')
@@ -13,15 +13,15 @@ depends=('perl' 'perl-Encode-Locale' 'perl-File-Listing'
          'perl-HTML-Parser' 'perl-HTTP-Cookies' 'perl-HTTP-Daemon'
          'perl-HTTP-Date' 'perl-HTTP-Negotiate' 'perl-LWP-MediaTypes'
          'perl-Net-HTTP' 'perl-URI' 'perl-WWW-RobotRules'
-         'perl-HTTP-Message')
-optdepends=('perl-LWP-Protocol-HTTPS: for https:// url schemes')
-source=(https://www.cpan.org/authors/id/E/ET/ETHER/libwww-perl-${pkgver}.tar.gz)
-sha256sums=('6f349d45c21b1ec0501c4437dfcb70570940e6c3d5bff783bd91d4cddead8322')
+         'perl-HTTP-Message' 'perl-Try-Tiny')
+optdepends=('perl-LWP-Protocol-https: for https:// url schemes')
+checkdepends=('perl-Test-Fatal' 'perl-Test-Requiresinternet')
+source=(https://cpan.metacpan.org/authors/id/O/OA/OALDERS/libwww-perl-${pkgver}.tar.gz)
+sha256sums=('a8e0849b8d2798fc45a2a5f2fe45c96cbbad5baf3bcbe64a3bf85f210e78708c')
 
 build() {
   cd libwww-perl-${pkgver}
   perl Makefile.PL INSTALLDIRS=vendor
-  #--aliases
   make
 }
 

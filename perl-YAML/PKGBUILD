@@ -2,7 +2,7 @@
 
 _realname=YAML
 pkgname=perl-${_realname}
-pkgver=1.23
+pkgver=1.27
 pkgrel=1
 pkgdesc="Perl/CPAN Module YAML : YAML Aint Markup Language"
 arch=('any')
@@ -10,9 +10,10 @@ url="http://search.cpan.org/dist/${_realname}/"
 groups=('perl-modules')
 license=('GPL' 'PerlArtistic')
 depends=('perl')
+checkdepends=('perl-Test-Deep' 'perl-Test-YAML')
 options=('!emptydirs')
 source=(ftp://ftp.cpan.org/pub/CPAN/modules/by-module/YAML/${_realname}-${pkgver}.tar.gz)
-sha256sums=('2ad8972038dd132851ddf2ca32634631f92065d6867519e5a635db9729adc84d')
+sha256sums=('c992a1e820de0721b62b22521de92cdbf49edc306ab804c485b4b1ec25f682f9')
 
 prepare() {
   cd "${srcdir}/${_realname}-${pkgver}"

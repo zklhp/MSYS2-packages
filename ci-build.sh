@@ -10,7 +10,7 @@ source 'ci-library.sh'
 mkdir artifacts
 git_config user.email 'ci@msys2.org'
 git_config user.name  'MSYS2 Continuous Integration'
-git remote add upstream 'https://github.com/Alexpux/MSYS2-packages'
+git remote add upstream 'https://github.com/MSYS2/MSYS2-packages'
 git fetch --quiet upstream
 
 # Detect
@@ -27,9 +27,16 @@ execute 'Approving recipe quality' check_recipe_quality
 for package in "${packages[@]}"; do
     execute 'Building binary' makepkg --noconfirm --noprogressbar --skippgpcheck --nocheck --syncdeps --rmdeps --cleanbuild
     execute 'Building source' makepkg --noconfirm --noprogressbar --skippgpcheck --allsource
+<<<<<<< HEAD
     # execute 'Installing' yes:pacman --noprogressbar --upgrade *.pkg.tar.xz
     mv "${package}"/*.pkg.tar.xz artifacts
     mv "${package}"/*.src.tar.gz artifacts
+=======
+    execute 'Installing' yes:pacman --noprogressbar --upgrade *.pkg.tar.xz
+    execute 'Checking dll depencencies' list_dll_deps ./pkg
+    deploy_enabled && mv "${package}"/*.pkg.tar.xz artifacts
+    deploy_enabled && mv "${package}"/*.src.tar.gz artifacts
+>>>>>>> 3a34b781ba2f385d557fbab886024fb7a34d2672
     unset package
 done
 

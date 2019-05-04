@@ -1,7 +1,7 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 
 pkgname=gawk
-pkgver=4.2.0
+pkgver=5.0.0
 pkgrel=1
 pkgdesc="GNU version of awk"
 arch=('i686' 'x86_64')
@@ -12,10 +12,18 @@ depends=('sh' 'mpfr' 'libintl' 'libreadline')
 makedepends=('gettext-devel' 'mpfr-devel' 'libreadline-devel')
 provides=('awk')
 install=gawk.install
-source=(https://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz{,.sig})
-sha256sums=('c88046c6e8396ee548bcb941e16def809b7b55b60a1044b5dd254094f347c7d9'
-            'SKIP')
+source=(https://ftp.gnu.org/pub/gnu/${pkgname}/${pkgname}-${pkgver}.tar.gz{,.sig}
+        gawk-4.2.1-msysize.patch)
+sha256sums=('2d686c9a5b7ba292bc3fa56bc84a1959d721a9d57970a76413156d4b8f1fc67d'
+            'SKIP'
+            '303a1fa02fb3e5bf075319d6e9982986d37e156be630d0141a1148cd803c67c4')
 validpgpkeys=('D1967C63788713177D861ED7DF597815937EC0D2')
+
+prepare() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+  patch -p1 -i ${srcdir}/gawk-4.2.1-msysize.patch
+  autoreconf -fiv
+}
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}

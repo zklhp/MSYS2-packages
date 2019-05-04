@@ -2,7 +2,7 @@
 # Maintainer: Allan McRae <allan@archlinux.org>
 
 pkgname=dejagnu
-pkgver=1.5.3
+pkgver=1.6.2
 pkgrel=1
 pkgdesc="Framework for testing other programs"
 arch=('any')
@@ -11,9 +11,14 @@ license=('GPL')
 depends=('expect')
 #install=dejagnu.install
 source=(https://ftp.gnu.org/gnu/dejagnu/${pkgname}-${pkgver}.tar.gz{,.sig})
-sha256sums=('099b8e364ca1d6248f8e1d32168c4b12677abff4253bbbb4a8ac8cdd321e3f19'
+sha256sums=('0d0671e1b45189c5fc8ade4b3b01635fb9eeab45cf54f57db23e4c4c1a17d261'
             'SKIP')
 validpgpkeys=('CB0B31452BBE862933013D9176362888B55988D4')   # Ben Elliston
+
+prepare() {
+  cd ${srcdir}/${pkgname}-${pkgver}
+  autoreconf -fiv
+}
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}

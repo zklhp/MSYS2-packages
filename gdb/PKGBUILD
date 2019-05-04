@@ -1,15 +1,15 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 
 pkgname=gdb
-pkgver=7.11.1
+pkgver=8.2.1
 pkgrel=1
-_gcc_ver=6.3.0
+_gcc_ver=7.4.0
 pkgdesc="GNU Debugger (MSYS2 version)"
 arch=('i686' 'x86_64')
 license=('GPL3')
 url="https://www.gnu.org/software/gdb/"
 groups=('base-devel')
-depends=("libiconv" "zlib" "expat" "python2" "libexpat" "libreadline")
+depends=("libiconv" "zlib" "expat" "python3" "libexpat" "libreadline")
 #checkdepends=('dejagnu' 'bc')
 makedepends=("libiconv-devel" "zlib-devel" "ncurses-devel" "liblzma-devel" "libexpat-devel" "libreadline-devel")
 options=('staticlibs' '!distcc' '!ccache')
@@ -18,21 +18,23 @@ source=("https://ftp.gnu.org/gnu/gdb/gdb-${pkgver}.tar.xz"{,.sig}
         0001-Teach-gdb-how-to-unwind-cygwin-_sigbe-and-sigdelayed.patch
         0002-7.8-windows-nat-cygwin.patch
         0003-Better-handling-for-realpath-failures-in-windows_mak.patch
-        0004-Support-settings-thread-name-MS-Windows.patch
+        0004-7.8-symtab-cygwin.patch
         0005-Remove-a-spurious-target_terminal_ours-from-windows_.patch
-        '7.8-symtab-cygwin.patch'
+        0006-PR-build-21187-Static-linking-of-libstdc-and-libgcc-.patch
+        0007-Fix-Cygwin-compilation-after-target_ops-C-conversion.patch
         'gdb-7.11.1-msysize.patch')
 validpgpkeys=('F40ADB902B24264AA42E50BF92EDB04BFF325CF3')
-sha256sums=('e9216da4e3755e9f414c1aa0026b626251dfc57ffe572a266e98da4f6988fc70'
+sha256sums=('0a6a432907a03c5c8eaad3c3cffd50c00a40c3a5e3c4039440624bae703f2202'
             'SKIP'
             '2bbe7eddb1828c394d0ff99777058df79b1a596172603bb0e30d983fc1ea8785'
-            'dd30d69f767dc48c6ed694f6c4934e246fc04372af65f7a112dbbb4644762a61'
-            '7253203b0f8d679daea84578910a9f39da2eed1887806ade0282e77e45196716'
-            'cb2c3aad769130310c5644e8cf125a922c524914b09dae8959ce2c6632de53bd'
-            'a5792649864915c60f11ec9e64361e77eeddbd151a1419abc1954e82f277dbf2'
-            'cadde28c9b294d2193d88202b88e559fd30df500af0d1fc12bc9eb6eccfde6e8'
-            '100680e4ddba097accf1159d096ec50d3be36cf3ed15346384c64978297e1aff'
-            '328b5d401ac9e442cc0927a14b40b9d8bbff98bf3aa14c28698a14f2b0f4a762')
+            '2bdd02d6dc46d1186a3fa4485922d277686ca9ff827dde6b9fa1a90e9345c953'
+            '42051344b0f3103cf4006114a223a2cbe24369145a69a298d4f389ffffddab95'
+            '91994d62047bb76688a785c9a911f8deda6e7b7aa258aade0a6b29904a9e9b58'
+            '41a5f72e2ac5838d853b906e1611e844e164e05f18bf2be4674a3a47ca41a875'
+            '7540630512c5fec56d330ffd05a8714d3a037080e1ff049eaa3c81aaae597708'
+            'f46337e3b0750f562ad6dbd4ad28860df160e98583b541d609ad9fadaff357c9'
+            '6e257ca1d46e76b87d2166f0cb302685a58ea0aa3a26ccdc3a6a17f730946db9'
+            '4b09f087d2e07a928e6ebd751302ff7c5ceff7ad67b783f27bb52252be09393a')
 
 prepare() {
   cd ${srcdir}/${pkgname}-${pkgver}
@@ -40,9 +42,10 @@ prepare() {
   patch -p1 -i ${srcdir}/0001-Teach-gdb-how-to-unwind-cygwin-_sigbe-and-sigdelayed.patch
   patch -p1 -i ${srcdir}/0002-7.8-windows-nat-cygwin.patch
   patch -p1 -i ${srcdir}/0003-Better-handling-for-realpath-failures-in-windows_mak.patch
-  patch -p1 -i ${srcdir}/0004-Support-settings-thread-name-MS-Windows.patch
+  patch -p1 -i ${srcdir}/0004-7.8-symtab-cygwin.patch
   patch -p1 -i ${srcdir}/0005-Remove-a-spurious-target_terminal_ours-from-windows_.patch
-  patch -p2 -i ${srcdir}/7.8-symtab-cygwin.patch
+  patch -p1 -i ${srcdir}/0006-PR-build-21187-Static-linking-of-libstdc-and-libgcc-.patch
+  patch -p1 -i ${srcdir}/0007-Fix-Cygwin-compilation-after-target_ops-C-conversion.patch
   patch -p1 -i ${srcdir}/gdb-7.11.1-msysize.patch
 
   # hack! - libiberty configure tests for header files using "$CPP $CPPFLAGS"
@@ -57,8 +60,9 @@ build() {
     --prefix=/usr \
     --enable-64-bit-bfd \
     --disable-werror \
+    --disable-staticlib \
     --with-system-gdbinit=/etc/gdbinit \
-    --with-python=/usr/bin/python2 \
+    --with-python=/usr/bin/python3 \
     --without-tcl \
     --without-tk \
     --without-guile \

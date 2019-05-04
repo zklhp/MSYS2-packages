@@ -2,7 +2,7 @@
 
 _realname=IO-Socket-SSL
 pkgname=perl-${_realname}
-pkgver=2.016
+pkgver=2.060
 pkgrel=1
 pkgdesc="Nearly transparent SSL encapsulation for IO::Socket::INET"
 arch=('any')
@@ -13,7 +13,7 @@ depends=('perl-Net-SSLeay' 'perl' 'perl-URI')
 checkdepends=('perl-IO-Socket-INET6')
 options=('!emptydirs')
 source=(https://www.cpan.org/authors/id/S/SU/SULLR/${_realname}-${pkgver}.tar.gz)
-sha256sums=('936268b3c152a4900f9c1762ab2e0aa3f84ed3a988e8e60aaad604beda7bfe41')
+sha256sums=('fb5b2877ac5b686a5d7b8dd71cf5464ffe75d10c32047b5570674870e46b1b8c')
 
 build() {
   cd ${_realname}-${pkgver}

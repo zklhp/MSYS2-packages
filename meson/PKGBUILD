@@ -1,0 +1,34 @@
+# Maintainer: Christoph Reiter <reiter.christoph@gmail.com>
+
+pkgname=meson
+pkgver=0.50.1
+pkgrel=1
+pkgdesc='High-productivity build system'
+arch=('any')
+url="https://mesonbuild.com/"
+license=('Apache 2')
+depends=('python3' 'python3-setuptools' 'ninja')
+source=("https://github.com/mesonbuild/${pkgname}/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.gz"
+        "cygwin-disguise.patch")
+sha256sums=('f68f56d60c80a77df8fc08fa1016bc5831605d4717b622c96212573271e14ecc'
+            'de6ba260edf941a1530f6fcde5d1b7404c1cc38bb9d4175793b5459071ca75d5')
+
+prepare() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  patch -p1 -i "${srcdir}"/cygwin-disguise.patch
+}
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  python3 setup.py build
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  python3 setup.py install --root="${pkgdir}/" --optimize=1
+
+  install -Dm644 COPYING "${pkgdir}/usr/share/licenses/${pkgname}/COPYING"
+}

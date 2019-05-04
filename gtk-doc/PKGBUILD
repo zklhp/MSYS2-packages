@@ -1,8 +1,8 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 
 pkgname=gtk-doc
-pkgver=1.26
-pkgrel=2
+pkgver=1.29
+pkgrel=1
 pkgdesc="Documentation tool for public library API"
 arch=('i686' 'x86_64')
 url="https://www.gtk.org/gtk-doc/"
@@ -12,18 +12,18 @@ depends=("docbook-xsl"
          "glib2"
          "gnome-doc-utils"
          "libxml2-python"
-         "python2"
+         "python3"
          "vim"
          "yelp-tools"
          "python2-six"
         )
 makedepends=("pkg-config"
              "glib2-devel"
-             "python2"
+             "python3"
              'itstool'
             )
 source=(https://download.gnome.org/sources/${pkgname}/${pkgver}/${pkgname}-${pkgver}.tar.xz)
-sha256sums=('bff3f44467b1d39775e94fad545f050faa7e8d68dc6a31aef5024ba3c2d7f2b7')
+sha256sums=('14578e002496567276d310a62c9ffd6c56ee8806ce5079ffb0b81c4111f586b1')
 
 prepare() {
   cd "${srcdir}/${pkgname}-${pkgver}"
@@ -34,7 +34,7 @@ prepare() {
 build() {
   mkdir -p "${srcdir}/build-${CHOST}"
   cd "${srcdir}/build-${CHOST}"
-  export PYTHON=/usr/bin/python2
+  export PYTHON=/usr/bin/python3
   ../${pkgname}-${pkgver}/configure \
     --prefix=/usr \
     --build=${CHOST} \

@@ -1,0 +1,42 @@
+--- dtc-1.5.0/Makefile.orig	2019-03-06 07:51:37.000000000 +0300
++++ dtc-1.5.0/Makefile	2019-04-25 08:41:36.269390800 +0300
+@@ -18,7 +18,7 @@
+ CPPFLAGS = -I libfdt -I .
+ WARNINGS = -Wall -Wpointer-arith -Wcast-qual -Wnested-externs \
+ 	-Wstrict-prototypes -Wmissing-prototypes -Wredundant-decls -Wshadow
+-CFLAGS = -g -Os $(SHAREDLIB_CFLAGS) -Werror $(WARNINGS)
++CFLAGS = -g -Os $(SHAREDLIB_CFLAGS)  $(WARNINGS)
+ 
+ BISON = bison
+ LEX = flex
+@@ -59,7 +59,7 @@
+ SHAREDLIB_CFLAGS  = -fPIC
+ SHAREDLIB_LDFLAGS = -fPIC -dynamiclib -Wl,-install_name -Wl,
+ else ifeq ($(HOSTOS),$(filter $(HOSTOS),msys cygwin))
+-SHAREDLIB_EXT     = so
++SHAREDLIB_EXT     = dll
+ SHAREDLIB_CFLAGS  =
+ SHAREDLIB_LDFLAGS = -shared -Wl,--version-script=$(LIBFDT_version) -Wl,-soname,
+ else
+@@ -267,7 +267,7 @@
+ include $(PYLIBFDT_dir)/Makefile.pylibfdt
+ 
+ .PHONY: pylibfdt
+-pylibfdt: $(PYLIBFDT_dir)/_libfdt.so
++pylibfdt: $(PYLIBFDT_dir)/_libfdt.$(SHAREDLIB_EXT)
+ 
+ #
+ # Release signing and uploading
+--- dtc-1.5.0/pylibfdt/Makefile.pylibfdt.orig	2019-04-25 08:39:00.773172800 +0300
++++ dtc-1.5.0/pylibfdt/Makefile.pylibfdt	2019-04-25 08:42:12.651441900 +0300
+@@ -2,8 +2,8 @@
+ #
+ 
+ PYLIBFDT_srcs = $(PYLIBFDT_dir)/libfdt.i
+-PYMODULE = $(PYLIBFDT_dir)/_libfdt.so
+-PYLIBFDT_CLEANFILES_L = libfdt_wrap.c libfdt.py *.pyc *.so
++PYMODULE = $(PYLIBFDT_dir)/_libfdt.$(SHAREDLIB_EXT)
++PYLIBFDT_CLEANFILES_L = libfdt_wrap.c libfdt.py *.pyc *.$(SHAREDLIB_EXT)
+ PYLIBFDT_CLEANFILES = $(PYLIBFDT_CLEANFILES_L:%=$(PYLIBFDT_dir)/%)
+ PYLIBFDT_CLEANDIRS_L = build __pycache__
+ PYLIBFDT_CLEANDIRS = $(PYLIBFDT_CLEANDIRS_L:%=$(PYLIBFDT_dir)/%)

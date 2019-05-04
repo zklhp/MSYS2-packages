@@ -2,7 +2,7 @@
 
 pkgname=grep
 pkgver=3.0
-pkgrel=1
+pkgrel=2
 pkgdesc="A string search utility"
 arch=('i686' 'x86_64')
 license=('GPL3')
@@ -25,14 +25,22 @@ prepare() {
 
   patch -p1 -i ${srcdir}/grep-2.23-msys2.patch
   # Once this will be commit upstream we need revert it
-  # patch -p2 -R -i ${srcdir}/grep-3.0-2.src.patch
+  #patch -p2 -R -i ${srcdir}/grep-3.0-2.src.patch
+
+  #make test cases work
+  sed -i "s|case \$perms in drwx--\[-S\]---\*|case \$perms in drwx\*|" tests/init.sh
 
   autoreconf -fi
 }
 
 build() {
   cd ${srcdir}/${pkgname}-${pkgver}
-  ./configure --build=${CHOST} \
+
+  echo ${CHOST}
+  ./configure \
+      --build=${CHOST} \
+      --host=${CHOST} \
+      --target=${CHOST} \
       --prefix=/usr \
       --without-libiconv-prefix \
       --without-libintl-prefix

@@ -2,8 +2,10 @@
 
 pkgbase=libidn2
 pkgname=('libidn2' 'libidn2-devel')
-pkgver=2.0.4
-pkgrel=2
+_basever=2.1.1
+_subver=a
+pkgver=${_basever}${_subver}
+pkgrel=1
 pkgdesc="Implementation of the Stringprep, Punycode and IDNA specifications"
 url="https://www.gnu.org/software/libidn/"
 arch=('i686' 'x86_64')
@@ -11,14 +13,14 @@ license=('GPL3' 'LGPL')
 makedepends=('gcc' 'make' 'pkg-config' 'texinfo' 'libunistring-devel')
 options=('!libtool' 'staticlibs')
 source=(https://ftp.gnu.org/gnu/libidn/${pkgname}-${pkgver}.tar.gz{,.sig}
-        libidn2-2.0.4-msys2.patch)
-sha256sums=('644b6b03b285fb0ace02d241d59483d98bc462729d8bb3608d5cad5532f3d2f0'
+        libidn2-2.1.0-msys2.patch)
+sha256sums=('57666bcf6ecf54230d7bac95c392379561954b57a673903aed4d3336b3048b72'
             'SKIP'
-            '4a440e917cf2f23b4ea153be73f40e561e4b7e20305e55a82351e1630fb318bc')
+            '2b59844cd7b4682439d40472cfc0844ff9f134932baf950a1ab95558c6b65d94')
 
 prepare() {
-  cd ${srcdir}/${pkgname}-${pkgver}
-  patch -p1 -i ${srcdir}/libidn2-2.0.4-msys2.patch
+  cd ${srcdir}/${pkgname}-${_basever}
+  patch -p1 -i ${srcdir}/libidn2-2.1.0-msys2.patch
 
   autoreconf -ivf
 }
@@ -27,7 +29,7 @@ build() {
   [[ -d ${srcdir}/build-${CHOST} ]] && rm -rf ${srcdir}/build-${CHOST}
   mkdir ${srcdir}/build-${CHOST}
   cd ${srcdir}/build-${CHOST}
-  ../${pkgname}-${pkgver}/configure \
+  ../${pkgname}-${_basever}/configure \
     --prefix=/usr \
     --build=${CHOST} \
     --enable-shared \

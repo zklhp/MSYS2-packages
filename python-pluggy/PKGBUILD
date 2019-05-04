@@ -1,0 +1,59 @@
+# Maintainer: J. Peter Mugaas <jpmugaas@suddenlink.net>
+
+_realname=pluggy
+pkgbase=python-pluggy
+pkgname=(python2-${_realname} python3-${_realname})
+pkgver=0.9.0
+pkgrel=1
+pkgdesc="Plugin and hook calling mechanisms for python"
+arch=('any')
+url="https://www.pluggypayments.com/docs/python"
+license=('MIT')
+makedepends=('python2-setuptools-scm' 'python3-setuptools-scm')
+checkdepends=('python2-pytest-runner' 'python3-pytest-runner')
+source=("$pkgbase-$pkgver.tar.gz::https://github.com/pytest-dev/pluggy/archive/$pkgver.tar.gz")
+sha512sums=('e4adcd4de9758476a43c338baf7d13b0a1380739d7c6cc593537a3ec63a6491250adf0f33183e323f50695d9d0191a7d3378b1d36df44f9355625624ef1c4551')
+
+prepare() {
+  cd "${srcdir}"
+  for builddir in python{2,3}-build-${CARCH}; do
+    rm -rf ${builddir} | true
+    cp -r "${_realname}-${pkgver}" "${builddir}"
+  done
+  # Set version for setuptools_scm
+  export SETUPTOOLS_SCM_PRETEND_VERSION=$pkgver
+}
+
+build() {
+  for pver in {2,3}; do  
+    msg "Python ${pver} build for ${CARCH}"  
+    cd "${srcdir}/python${pver}-build-${CARCH}"
+    python${pver} setup.py build
+  done  
+}
+
+check() {
+  for pver in {2,3}; do
+    msg "Python ${pver} test for ${CARCH}"
+    cd "${srcdir}/python${pver}-build-${CARCH}"
+    python${pver} setup.py pytest
+  done
+}
+
+package_python3-pluggy() {
+  depends=('python3')
+
+  cd "${srcdir}/python3-build-${CARCH}"
+  python3 setup.py install -O1 --root "$pkgdir" --optimize=1 --skip-build
+
+  install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
+
+package_python2-pluggy() {
+  depends=('python2')
+
+  cd "${srcdir}/python2-build-${CARCH}"
+  python2 setup.py install -O1 --root "$pkgdir" --optimize=1 --skip-build
+
+  install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}

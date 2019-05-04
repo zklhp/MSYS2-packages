@@ -2,7 +2,7 @@
 
 _realname=Archive-Zip
 pkgname=perl-${_realname}
-pkgver=1.46
+pkgver=1.64
 pkgrel=1
 pkgdesc="Provide a perl interface to ZIP archive files"
 arch=('any')
@@ -12,7 +12,7 @@ depends=('perl')
 groups=('perl-modules')
 options=('!emptydirs')
 source=(https://www.cpan.org/authors/id/P/PH/PHRED/${_realname}-${pkgver}.tar.gz)
-sha256sums=('6630ebeba753a7025126028eb290040ce44d86e8ced77017e31b75863348e524')
+sha256sums=('de5f84f2148038363d557b1fa33f58edc208111f789f7299fe3d8f6e11b4d17d')
 
 build() {
   cd ${_realname}-${pkgver}

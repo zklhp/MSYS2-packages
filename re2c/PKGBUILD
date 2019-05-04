@@ -1,15 +1,15 @@
 # Maintainer: J. Peter Mugaas <jpmugaas@suddenlink.net>
 # stolen from Archlinux
 pkgname=re2c
-pkgver=0.16
+pkgver=1.1.1
 pkgrel=1
 arch=(i686 x86_64)
 depends=(gcc-libs)
 pkgdesc='A tool for generating C-based recognizers from regular expressions'
-url='https://re2c.sourceforge.io/'
+url='http://re2c.org'
 license=(GPL)
-source=(https://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.gz)
-sha256sums=('48c12564297641cceb5ff05aead57f28118db6277f31e2262437feba89069e84')
+source=(https://github.com/skvadrik/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.gz)
+sha256sums=('856597337ea00b24ce91f549f79e6eece1b92ba5f8b63292cad66c14ac7451cf')
 
 build() {
   cd $pkgname-$pkgver

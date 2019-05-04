@@ -3,8 +3,8 @@
 
 pkgbase=msys2-runtime
 pkgname=('msys2-runtime' 'msys2-runtime-devel')
-pkgver=2.10.0
-pkgrel=2
+pkgver=3.0.6
+pkgrel=1
 pkgdesc="Cygwin POSIX emulation engine"
 arch=('i686' 'x86_64')
 url="https://www.cygwin.com/"
@@ -15,6 +15,7 @@ makedepends=('cocom'
              'perl'
              'gcc'
              'make'
+             'mingw-w64-cross-crt-git'
              'mingw-w64-cross-gcc'
              'mingw-w64-cross-zlib'
              'zlib-devel'
@@ -23,54 +24,40 @@ makedepends=('cocom'
              'diffutils')
 # options=('debug' '!strip')
 source=('msys2-runtime'::git://sourceware.org/git/newlib-cygwin.git#tag=cygwin-${pkgver//./_}-release
-        0001-Add-MSYS-triplets.patch
-        0002-Rename-DLL-from-cygwin-to-msys.patch
+        0001-Add-MSYS2-triplet.patch
+        0002-Rename-dll-from-cygwin-to-msys.patch
         0003-Add-functionality-for-converting-UNIX-paths-in-argum.patch
         0004-Add-functionality-for-changing-OS-name-via-MSYSTEM-e.patch
         0005-Move-root-to-usr.-Change-sorting-mount-points.-Do-no.patch
         0006-Do-not-create-cygwin-symlinks.-Instead-use-deep-copy.patch
-        0007-Automatically-rewrite-TERM-msys-to-TERM-cygwin.patch
+        0007-Automatically-rewrite-TERM-msys-to-TERM-cygwin-With-.patch
         0008-Do-not-convert-environment-for-strace.patch
-        0009-convert-be-more-careful-to-stay-within-the-buffer.patch
-        0010-convert-check-safely-whether-we-could-allocate-the-b.patch
-        0011-convert-use-the-elegant-realloc-call.patch
-        0012-convert-plug-potential-memory-leak.patch
-        0013-convert-warn-when-we-cut-off-a-path.patch
-        0014-arg_heuristic-be-better-prepared-to-handle-path-list.patch
-        0015-Fix-converting-argument-looks-like-DVAR-str1-c-path1.patch
-        0016-Special-case-for-converting-root-directory-to-have-t.patch
-        0017-dcrt0.cc-Untangle-allow_glob-from-winshell.patch
-        0018-dcrt0.cc-globify-Don-t-quote-literal-strings-differe.patch
-        0019-strace.cc-Don-t-set-MSYS-noglob.patch
-        0020-Add-debugging-for-build_argv.patch
-        0021-Add-debugging-for-strace-make_command_line.patch
-        0022-environ.cc-New-facility-environment-variable-MSYS2_E.patch
-        0023-path.cc-Ignore-zero-length-exclusions.patch
+        0009-Special-case-for-converting-root-directory-to-have-t.patch
+        0010-dcrt0.cc-Untangle-allow_glob-from-winshell.patch
+        0011-dcrt0.cc-globify-Don-t-quote-literal-strings-differe.patch
+        0012-strace.cc-Don-t-set-MSYS-noglob.patch
+        0013-Add-debugging-for-build_argv.patch
+        0014-Add-debugging-for-strace-make_command_line.patch
+        0015-environ.cc-New-facility-environment-variable-MSYS2_E.patch
+        0024-Fix-native-symbolic-link-spawn-passing-wrong-arg0.patch
 )
 sha256sums=('SKIP'
-            '8aafdf4f62a52195a591ebe24ab671c35aa1d7c60381c8ff3526c4c1dd1fdf0e'
-            '0f95696e2bafc6120a60e66fe48884d516ca28fc5ee1ddf9e52f946e1234019d'
-            '735321f3f00e60af22dead4d319a73199d0f3839fed5566021d310a4697a5b6b'
-            '8c3aa163f2c5f65622e3b3067a8dd5eb9bf5ffe1314b877fd85505ee3fd54ada'
-            '884dcf771e3a6122f34029b1780511f180f2143db463c19a1c6051921e6ad267'
-            '2c5b74243d9d1b10447875ee8c1793c512da269cd33b069f6e478d304895abd2'
-            'a3708553ff2f3ba8608e4cff6488d0c1f61f1c1739f16127c398921cca944731'
-            'ee178aa40f3f9d3e197e87ac8b5cb646aef44ca59d4664e142fb571ab5128a19'
-            '601e2f7c99c8702061d89a79a1f9ffe3e85f77f75ee718a8186d91b5d1deac87'
-            'd8a060a752f703da0051ee4929a10d8ca72eaab3dd54da111b54c52f34177950'
-            '0cc775ee20bc1f5c947eadc7b1bfc022508bcc0f4eb6aae294184b024de55222'
-            'd299312cca28130823a6ca4e163e8c0bc32887c132c76c37e8cb0082c7d54e10'
-            '7cb032f609aeee26def614f4c8b7ffb3a41e63412c045ebeaa9385d58f53a5ba'
-            '3f176e0713024301a2497836caf5c5c7cc00212f2dbc164a9565a619980ed1bc'
-            '7a43506231fdedcb6fe01fee7094040fe4c2904af1d84ab18022b2aa0cc3ea13'
-            'd861b33b5396455959a009d935ffc73e81977d2eb50038753aee02c7e0d3d5c6'
-            '5be0cda0f574ad9a7408c28987b9884dd8e9e584db26abadbb3f7466543e65e2'
-            'fd8f188fe49549ca690f13abfe02eace268011fc39644bfdf5df6acf64aeb32f'
-            '06ba3acae156d3e409355cda6b81fc18f1f6f5839676c4f7d8d1970e2fd4d31c'
-            '09972073fe07623ad8bbfdec9c7c33fd75e12cd9d237aef3c04468a9aefa4afd'
-            'ac80823274db00b877f1e925426da1a709f00b211f77e30fe4448f5c6c31194a'
-            'a0fe210a8ae05f0a17a06ff79736d0908a6c3dc0fc6db444e5c4d050b84b779d'
-            '7cba394680f874b23fa77ea295d17f4b2a2a5f64bd376cd6afd6cf34b05f659b')
+            'df193299ab04aca8a049b2b98d025452caad95f27fba5a1f1b350f74a82c24f1'
+            'dd6c9856d6134cd992eee7ef4bdd64d5c57cd2faba9eae12d9be98c182b74734'
+            'e5d92649f29de5e13a5c214c73b307c74ed58fe0806c35b422c50f96088f01fd'
+            'bd67641a856d38c957b0b30bbc4fd58d9ca8829ae84c11acd13211c9dee1aab4'
+            '400d5377d986e53d3af50e730c536e71c9dfebb77a0efa71c14302fd8e201c59'
+            '2122b881be02cad4b2203a848f2a49794157ef091ed01f4c4e8d17c0b5e5b111'
+            'd001b32e07899a7a0cb44baaba7f5bc1cff57130a29ab72e3413a9698e0c3e0f'
+            '3e0c58abe0c81b7c08fdd0affd5d96a82f61f890b90fcee692584fe5b364962e'
+            'ead507d1fe2bc796937f93913da5196c33120a15860b5b87f7903e7015172dcd'
+            'f6471c9349bd89582cb6f5c5e32a427867d941b534267f86b1cee4367f8c8ab1'
+            'f429aaacd345e59f393b6b681c938a0d38017538e8bc40b27c8ade594d4f175d'
+            '774fda3da42da082578152c22d64b87f4bc63ad0412edb680f229b2ab5a1714e'
+            '8fa80ce0e14f078cf6a7096d0587c27add38d647191d5c836a70761b4214ffb4'
+            '05cca683b21ba0c8d22135f1f1f01da134be175de49fe7076200d7fe3efa4dce'
+            '0284f51a2b2be39e74592ef03fa24f6af4665c27d84b421f266ae503013eb104'
+            '50d8a52cc33501898e7a01b00e8e5965c1ef7f37f26039a4380788ce7639a04c')
 
 # Helper macros to help make tasks easier #
 apply_patch_with_msg() {
@@ -103,29 +90,22 @@ prepare() {
   cd "${srcdir}"/msys2-runtime
   del_file_exists winsup/cygwin/msys2_path_conv.cc \
     winsup/cygwin/msys2_path_conv.h 
- apply_git_am_with_msg 0001-Add-MSYS-triplets.patch \
-  0002-Rename-DLL-from-cygwin-to-msys.patch \
+ apply_git_am_with_msg 0001-Add-MSYS2-triplet.patch \
+  0002-Rename-dll-from-cygwin-to-msys.patch \
   0003-Add-functionality-for-converting-UNIX-paths-in-argum.patch \
   0004-Add-functionality-for-changing-OS-name-via-MSYSTEM-e.patch \
   0005-Move-root-to-usr.-Change-sorting-mount-points.-Do-no.patch \
   0006-Do-not-create-cygwin-symlinks.-Instead-use-deep-copy.patch \
-  0007-Automatically-rewrite-TERM-msys-to-TERM-cygwin.patch \
+  0007-Automatically-rewrite-TERM-msys-to-TERM-cygwin-With-.patch \
   0008-Do-not-convert-environment-for-strace.patch \
-  0009-convert-be-more-careful-to-stay-within-the-buffer.patch \
-  0010-convert-check-safely-whether-we-could-allocate-the-b.patch \
-  0011-convert-use-the-elegant-realloc-call.patch \
-  0012-convert-plug-potential-memory-leak.patch \
-  0013-convert-warn-when-we-cut-off-a-path.patch \
-  0014-arg_heuristic-be-better-prepared-to-handle-path-list.patch \
-  0015-Fix-converting-argument-looks-like-DVAR-str1-c-path1.patch \
-  0016-Special-case-for-converting-root-directory-to-have-t.patch \
-  0017-dcrt0.cc-Untangle-allow_glob-from-winshell.patch \
-  0018-dcrt0.cc-globify-Don-t-quote-literal-strings-differe.patch \
-  0019-strace.cc-Don-t-set-MSYS-noglob.patch \
-  0020-Add-debugging-for-build_argv.patch \
-  0021-Add-debugging-for-strace-make_command_line.patch \
-  0022-environ.cc-New-facility-environment-variable-MSYS2_E.patch \
-  0023-path.cc-Ignore-zero-length-exclusions.patch
+  0009-Special-case-for-converting-root-directory-to-have-t.patch \
+  0010-dcrt0.cc-Untangle-allow_glob-from-winshell.patch \
+  0011-dcrt0.cc-globify-Don-t-quote-literal-strings-differe.patch \
+  0012-strace.cc-Don-t-set-MSYS-noglob.patch \
+  0013-Add-debugging-for-build_argv.patch \
+  0014-Add-debugging-for-strace-make_command_line.patch \
+  0015-environ.cc-New-facility-environment-variable-MSYS2_E.patch \
+  0024-Fix-native-symbolic-link-spawn-passing-wrong-arg0.patch
 
 }
 

@@ -1,85 +1,68 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 
 pkgbase=gc
-pkgname=('libgc' 'libgc-devel' 'libatomic_ops-devel')
-pkgver=7.6.0
+pkgname=('libgc' 'libgc-devel')
+pkgver=7.6.8
 pkgrel=1
 pkgdesc="A garbage collector for C and C++"
 arch=('i686' 'x86_64')
-gropus=('libraries')
+groups=('libraries')
 url="http://www.hboehm.info/gc/"
 license=('GPL')
-source=("http://www.hboehm.info/gc/gc_source/${pkgbase}-${pkgver}.tar.gz"
+source=("https://github.com/ivmai/bdwgc/releases/download/v${pkgver}/${pkgbase}-${pkgver}.tar.gz"
         gc-7.6-msys2.patch
-		libatomic_ops-7.4.4.patch)
-depends=('gcc-libs')
+        gc_cpp_delete.patch)
+makedepends=(libatomic_ops-devel)
 options=('!libtool')
-sha256sums=('a14a28b1129be90e55cd6f71127ffc5594e1091d5d54131528c24cd0c03b7d90'
-            '43ea44a5d0bc3d557fc9028d4be2e20ccdfbbda666d6958c1165256c931c9bb2'
-			'613b5ab7913f30f1585071f731181f4fbffc7dbee296043d5c6363b6e5369b1c')
+sha256sums=('040ac5cdbf1bebc7c8cd4928996bbae0c54497c151ea5639838fa0128102e258'
+            'e926468756764b66c6c896d99b244bc27c310d4616b03c0c06dc613a23b3ac39'
+            '26fb4c2cf0d44c26419ac51a5c95707febfc104ca932dafac3470e2b05241498')
 
 prepare() {
   cd "${srcdir}/${pkgbase}-${pkgver}"
-
   patch -p1 -i ${srcdir}/gc-7.6-msys2.patch
-  patch -p1 -i ${srcdir}/libatomic_ops-7.4.4.patch
+  patch -p1 -i ${srcdir}/gc_cpp_delete.patch
+  autoreconf -fiv
 }
 
 build() {
-  cd "${srcdir}/${pkgbase}-${pkgver}"
-  ./configure --build=${CHOST} \
+  mkdir -p "${srcdir}/build-${CARCH}"
+  cd "${srcdir}/build-${CARCH}"
+
+  ../${pkgbase}-${pkgver}/configure \
+    --build=${CHOST} \
     --prefix=/usr \
-  --enable-cplusplus \
-  --enable-threads=pthreads \
-  --without-libatomic-ops \
-  --disable-static
+    --enable-cplusplus \
+    --enable-threads=pthreads \
+    --with-libatomic-ops=yes \
+    --enable-handle-fork
+
   make
+}
 
-  # Install to dest
-  make DESTDIR="${srcdir}/dest" install
-  cd libatomic_ops
-  make DESTDIR="${srcdir}/dest" install
-  cd ..
+check() {
+  cd "${srcdir}/build-${CARCH}"
 
-  rm -rf "${srcdir}/dest/usr/share/gc"
-  install -m755 -d "${srcdir}/dest/usr/share/doc/gc"
-  install -m644 doc/README.{environment,win32} \
-    "${srcdir}/dest/usr/share/doc/gc/"
-
-  sed -i -e 's/GC_MALLOC 1L/gc 3/' doc/gc.man
-  install -m755 -d "${srcdir}/dest/usr/share/man/man3"
-  install -m644 doc/gc.man "${srcdir}/dest/usr/share/man/man3/gc.3"
+  make check
 }
 
 package_libgc() {
-  mkdir -p $pkgdir/usr/{bin,share}
-  cp -f ${srcdir}/dest/usr/bin/*.dll $pkgdir/usr/bin/
-  cp -rf ${srcdir}/dest/usr/share/man $pkgdir/usr/share/
+  depends=('libatomic_ops' 'gcc-libs')
+  cd "${srcdir}/build-${CARCH}"
+
+  make DESTDIR=${pkgdir} install
+
+  rm -rf ${pkgdir}/usr/{include,lib}
 }
 
 package_libgc-devel() {
   groups=('development')
   options=('staticlibs')
-  depends=("libgc=${pkgver}")
+  depends=("libgc=${pkgver}" "libatomic_ops-devel")
 
-  mkdir -p $pkgdir/usr/{lib,include}
-  cp -rf ${srcdir}/dest/usr/include/gc $pkgdir/usr/include
-  cp -f ${srcdir}/dest/usr/include/gc*.h $pkgdir/usr/include/
+  cd "${srcdir}/build-${CARCH}"
 
-  cp -f ${srcdir}/dest/usr/lib/lib{cord,gc}*.a $pkgdir/usr/lib/
-  mkdir -p $pkgdir/usr/lib/pkgconfig
-  cp -f ${srcdir}/dest/usr/lib/pkgconfig/bdw-gc.pc $pkgdir/usr/lib/pkgconfig/
-}
+  make DESTDIR=${pkgdir} install
 
-package_libatomic_ops-devel() {
-  groups=('development')
-  options=('staticlibs')
-
-  mkdir -p $pkgdir/usr/{lib,include}
-  cp -rf ${srcdir}/dest/usr/include/atomic_ops $pkgdir/usr/include
-  cp -f ${srcdir}/dest/usr/include/atomic_ops*.h $pkgdir/usr/include/
-
-  cp -f ${srcdir}/dest/usr/lib/libatomic_ops*.a $pkgdir/usr/lib/
-  mkdir -p $pkgdir/usr/lib/pkgconfig
-  cp -f ${srcdir}/dest/usr/lib/pkgconfig/atomic_ops.pc $pkgdir/usr/lib/pkgconfig/
+  rm -rf ${pkgdir}/usr/{bin,share}
 }

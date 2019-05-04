@@ -1,7 +1,7 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 
 pkgname=mintty
-pkgver=2.8.4
+pkgver=3.0.0
 pkgrel=1
 epoch=1
 pkgdesc="Terminal emulator with native Windows look and feel"
@@ -13,7 +13,7 @@ url="https://mintty.github.io"
 source=(${pkgname}-${pkgver}.tar.gz::https://github.com/mintty/mintty/archive/${pkgver}.tar.gz
         0002-add-msys2-launcher.patch
         0003-fix-current-dir-inheritance-for-alt-f2-on-msys2.patch)
-sha256sums=('bc1ffa533a375c406685206d06660b1e8d3f5ee9ee865ef426af2807241fe4aa'
+sha256sums=('a23a21ec9e70027146855a35522deba41f5935d4ccddd526abfe92fcc36aef9b'
             '2206240168fa481e54346406e96820a1e0a678a9cc21076bd8fac4c97c527dd4'
             'd2398c8586c8eaa04dc2f49d663855f420a17feec918f6ac63a8b975037cd86c')
 
@@ -45,8 +45,10 @@ package() {
   mkdir -p ${pkgdir}/usr/share/licenses/${pkgname}
   mkdir -p ${pkgdir}/usr/share/${pkgname}/lang
   mkdir -p ${pkgdir}/usr/share/${pkgname}/themes
+  mkdir -p ${pkgdir}/usr/share/${pkgname}/icon
 
   install -m755 bin/mintty.exe ${pkgdir}/usr/bin/mintty.exe
+  install -m755 tools/* ${pkgdir}/usr/bin/
   install -m644 docs/mintty.1 ${pkgdir}/usr/share/man/man1/mintty.1
 
   install -m644 LICENSE ${pkgdir}/usr/share/licenses/${pkgname}/
@@ -57,4 +59,12 @@ package() {
   install -m644 lang/*.po ${pkgdir}/usr/share/${pkgname}/lang/
 
   install -m644 themes/* ${pkgdir}/usr/share/${pkgname}/themes/
+
+  install -m644 icon/wsl.ico ${pkgdir}//usr/share/${pkgname}/icon
+  for i in 16 24 32 48 64 256
+  do
+    mkdir -p ${pkgdir}/usr/share/icons/hicolor/${i}x${i}/apps
+    install -m644 icon/hi${i}-apps-mintty.png \
+                 ${pkgdir}/usr/share/icons/hicolor/${i}x${i}/apps/mintty.png
+  done
 }

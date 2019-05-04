@@ -1,7 +1,7 @@
 # Maintainer: Alexey Pavlov <alexpux@gmail.com>
 
 pkgname=tmux
-pkgver=2.6
+pkgver=2.9
 pkgrel=1
 pkgdesc='A terminal multiplexer'
 url='https://tmux.github.io/'
@@ -13,16 +13,20 @@ depends=('ncurses' 'libevent')
 makedepends=('ncurses-devel' 'libevent-devel')
 source=(https://github.com/tmux/tmux/releases/download/$pkgver/tmux-$pkgver.tar.gz
         'msys-platform.patch'
-        'no-check-dirs-permission.patch')
+        'no-check-dirs-permission.patch'
+        'inherit-msystem-var.patch')
 
-sha256sums=('b17cd170a94d7b58c0698752e1f4f263ab6dc47425230df7e53a6435cc7cd7e8'
+sha256sums=('34901232f486fd99f3a39e864575e658b5d49f43289ccc6ee57c365f2e2c2980'
             'cf7e0f642d43fc97f7c55be41c693cceab5c891f81fcee687e918075e55cd533'
-            '8f1938c9bcb99fba5441e11379a193c17eee582a03c04f1bde8089d58a84f44f')
+            '8f1938c9bcb99fba5441e11379a193c17eee582a03c04f1bde8089d58a84f44f'
+            'cc832494d4fd4c7bd86a77af5f830422d342a812c890ef1d1d2e8d8a08352cd4')
 
 prepare() {
   cd "${srcdir}/$pkgname-$pkgver"
   patch -p1 -i "${srcdir}"/msys-platform.patch
   patch -p0 -i "${srcdir}"/no-check-dirs-permission.patch
+  patch -p1 -i "${srcdir}"/inherit-msystem-var.patch
+
   cp osdep-cygwin.c osdep-msys.c
 
   #msg2 "Running autogen.sh"

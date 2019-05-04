@@ -1,8 +1,8 @@
 # Maintainer: LoveSy <shana@zju.edu.cn>
 
 pkgname="openbsd-netcat"
-pkgver=1.130
-pkgrel=3
+pkgver=1.195
+pkgrel=1
 pkgdesc="TCP/IP swiss army knife. OpenBSD variant."
 arch=('i686' 'x86_64')
 url="https://packages.debian.org/sid/netcat-openbsd"
@@ -10,17 +10,17 @@ license=('BSD')
 provides=('netcat')
 conflicts=('gnu-netcat')
 source=("http://ftp.debian.org/debian/pool/main/n/netcat-openbsd/netcat-openbsd_${pkgver}.orig.tar.gz"
-	"http://ftp.debian.org/debian/pool/main/n/netcat-openbsd/netcat-openbsd_${pkgver}-${pkgrel}.debian.tar.xz"
-    'openbsd-netcat.patch')
-sha256sums=('fd7205065d0b47898851f31f33e614de5d47a5b9dc81fd50d2ff51b63d091e5b'
-            '2a41980c0c81159243ef7b97480241bb6c23f9c9bab81fea51689b2a77022439'
-            'SKIP')
+        "http://ftp.debian.org/debian/pool/main/n/netcat-openbsd/netcat-openbsd_${pkgver}-${pkgrel}.debian.tar.xz"
+        "openbsd-netcat.patch")
+sha256sums=('0e283b2a214313c69447cd962c528ac19afb3ddfe606b25de6d179f187cde4c3'
+            'c6736fcbab5254cbbc52278993a951da1126e42800a297c27db297e332e2017e'
+            'a55a35b0dc3a600324295235a7eea5dc5abada6e5506ba318087abd6c0c7766c')
 
 prepare() {
   cd "$srcdir"/netcat-openbsd-${pkgver%_*}
   for i in `cat ../debian/patches/series`; do
-	echo "** patch $i" 1>&2
-	cat "../debian/patches/$i"
+    echo "** patch $i" 1>&2
+    cat "../debian/patches/$i"
   done | patch -p1
   patch -p1 -i "${srcdir}/openbsd-netcat.patch"
 }

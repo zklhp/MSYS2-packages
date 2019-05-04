@@ -1,0 +1,127 @@
+diff -Naur libidn2-2.1.0-orig/build-aux/ar-lib libidn2-2.1.0/build-aux/ar-lib
+--- libidn2-2.1.0-orig/build-aux/ar-lib	2019-01-04 21:40:50.000000000 +0300
++++ libidn2-2.1.0/build-aux/ar-lib	2019-01-14 11:49:38.053330800 +0300
+@@ -53,7 +53,7 @@
+ 	  MINGW*)
+ 	    file_conv=mingw
+ 	    ;;
+-	  CYGWIN*)
++	  CYGWIN* | MSYS*)
+ 	    file_conv=cygwin
+ 	    ;;
+ 	  *)
+@@ -65,7 +65,7 @@
+ 	mingw)
+ 	  file=`cmd //C echo "$file " | sed -e 's/"\(.*\) " *$/\1/'`
+ 	  ;;
+-	cygwin)
++	cygwin | msys)
+ 	  file=`cygpath -m "$file" || echo "$file"`
+ 	  ;;
+ 	wine)
+diff -Naur libidn2-2.1.0-orig/build-aux/compile libidn2-2.1.0/build-aux/compile
+--- libidn2-2.1.0-orig/build-aux/compile	2019-01-04 21:40:50.000000000 +0300
++++ libidn2-2.1.0/build-aux/compile	2019-01-14 11:49:38.068930800 +0300
+@@ -53,7 +53,7 @@
+ 	  MINGW*)
+ 	    file_conv=mingw
+ 	    ;;
+-	  CYGWIN*)
++	  CYGWIN*|MSYS*)
+ 	    file_conv=cygwin
+ 	    ;;
+ 	  *)
+@@ -67,7 +67,7 @@
+ 	mingw/*)
+ 	  file=`cmd //C echo "$file " | sed -e 's/"\(.*\) " *$/\1/'`
+ 	  ;;
+-	cygwin/*)
++	cygwin/*|msys/*)
+ 	  file=`cygpath -m "$file" || echo "$file"`
+ 	  ;;
+ 	wine/*)
+diff -Naur libidn2-2.1.0-orig/build-aux/config.guess libidn2-2.1.0/build-aux/config.guess
+--- libidn2-2.1.0-orig/build-aux/config.guess	2019-01-04 21:26:08.000000000 +0300
++++ libidn2-2.1.0/build-aux/config.guess	2019-01-14 12:05:44.374828500 +0300
+@@ -909,6 +909,9 @@
+     amd64:CYGWIN*:*:* | x86_64:CYGWIN*:*:*)
+ 	echo x86_64-pc-cygwin
+ 	exit ;;
++    amd64:MSYS*:*:* | x86_64:MSYS*:*:*)
++	echo x86_64-pc-msys
++	exit ;;
+     prep*:SunOS:5.*:*)
+ 	echo powerpcle-unknown-solaris2"`echo "$UNAME_RELEASE"|sed -e 's/[^.]*//'`"
+ 	exit ;;
+diff -Naur libidn2-2.1.0-orig/build-aux/config.rpath libidn2-2.1.0/build-aux/config.rpath
+--- libidn2-2.1.0-orig/build-aux/config.rpath	2019-01-04 21:40:28.000000000 +0300
++++ libidn2-2.1.0/build-aux/config.rpath	2019-01-14 11:49:38.068930800 +0300
+@@ -57,7 +57,7 @@
+     aix*)
+       wl='-Wl,'
+       ;;
+-    mingw* | cygwin* | pw32* | os2* | cegcc*)
++    mingw* | cygwin* | msys* | pw32* | os2* | cegcc*)
+       ;;
+     hpux9* | hpux10* | hpux11*)
+       wl='-Wl,'
+@@ -149,7 +149,7 @@
+ hardcode_minus_L=no
+ 
+ case "$host_os" in
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     # FIXME: the MSVC++ port hasn't been tested in a loooong time
+     # When not using gcc, we currently assume that we are using
+     # Microsoft Visual C++.
+@@ -198,7 +198,7 @@
+         ld_shlibs=no
+       fi
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+       # no search path for DLLs.
+       hardcode_libdir_flag_spec='-L$libdir'
+@@ -348,7 +348,7 @@
+       ;;
+     bsdi[45]*)
+       ;;
+-    cygwin* | mingw* | pw32* | cegcc*)
++    cygwin* | msys* | mingw* | pw32* | cegcc*)
+       # When not using gcc, we currently assume that we are using
+       # Microsoft Visual C++.
+       # hardcode_libdir_flag_spec is actually meaningless, as there is
+@@ -533,7 +533,7 @@
+   bsdi[45]*)
+     library_names_spec='$libname$shrext'
+     ;;
+-  cygwin* | mingw* | pw32* | cegcc*)
++  cygwin* | msys* | mingw* | pw32* | cegcc*)
+     shrext=.dll
+     library_names_spec='$libname.dll.a $libname.lib'
+     ;;
+diff -Naur libidn2-2.1.0-orig/m4/double-slash-root.m4 libidn2-2.1.0/m4/double-slash-root.m4
+--- libidn2-2.1.0-orig/m4/double-slash-root.m4	2019-01-04 21:26:17.000000000 +0300
++++ libidn2-2.1.0/m4/double-slash-root.m4	2019-01-14 11:49:38.084530800 +0300
+@@ -16,7 +16,7 @@
+         # special semantics and is distinct from /, please report it to
+         # <bug-gnulib@gnu.org>.
+         case $host in
+-          *-cygwin | i370-ibm-openedition)
++          *-cygwin | *-msys | i370-ibm-openedition)
+             gl_cv_double_slash_root=yes ;;
+           *)
+             # Be optimistic and assume that / and // are the same when we
+diff -Naur libidn2-2.1.0-orig/m4/malloc.m4 libidn2-2.1.0/m4/malloc.m4
+--- libidn2-2.1.0-orig/m4/malloc.m4	2019-01-04 21:26:17.000000000 +0300
++++ libidn2-2.1.0/m4/malloc.m4	2019-01-14 12:13:33.702411000 +0300
+@@ -33,7 +33,7 @@
+        [case "$host_os" in
+           # Guess yes on platforms where we know the result.
+           *-gnu* | gnu* | freebsd* | netbsd* | openbsd* \
+-          | hpux* | solaris* | cygwin* | mingw*)
++          | hpux* | solaris* | cygwin* | msys* | mingw*)
+             ac_cv_func_malloc_0_nonnull=yes ;;
+           # If we don't know, assume the worst.
+           *) ac_cv_func_malloc_0_nonnull=no ;;
