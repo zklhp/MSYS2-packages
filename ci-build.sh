@@ -27,16 +27,10 @@ execute 'Approving recipe quality' check_recipe_quality
 for package in "${packages[@]}"; do
     execute 'Building binary' makepkg --noconfirm --noprogressbar --skippgpcheck --nocheck --syncdeps --rmdeps --cleanbuild
     execute 'Building source' makepkg --noconfirm --noprogressbar --skippgpcheck --allsource
-<<<<<<< HEAD
-    # execute 'Installing' yes:pacman --noprogressbar --upgrade *.pkg.tar.xz
-    mv "${package}"/*.pkg.tar.xz artifacts
-    mv "${package}"/*.src.tar.gz artifacts
-=======
     execute 'Installing' yes:pacman --noprogressbar --upgrade *.pkg.tar.xz
     execute 'Checking dll depencencies' list_dll_deps ./pkg
-    deploy_enabled && mv "${package}"/*.pkg.tar.xz artifacts
-    deploy_enabled && mv "${package}"/*.src.tar.gz artifacts
->>>>>>> 3a34b781ba2f385d557fbab886024fb7a34d2672
+    mv "${package}"/*.pkg.tar.xz artifacts
+    mv "${package}"/*.src.tar.gz artifacts
     unset package
 done
 
